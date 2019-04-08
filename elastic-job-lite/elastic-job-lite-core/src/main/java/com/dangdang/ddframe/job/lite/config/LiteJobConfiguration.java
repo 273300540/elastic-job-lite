@@ -37,7 +37,7 @@ public final class LiteJobConfiguration implements JobRootConfiguration {
     private final JobTypeConfiguration typeConfig;
     
     private final boolean monitorExecution;
-    
+    /**与注册中心允许的时间误差*/
     private final int maxTimeDiffSeconds;
     
     private final int monitorPort;

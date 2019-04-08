@@ -26,7 +26,7 @@ import com.dangdang.ddframe.job.lite.internal.storage.JobNodePath;
  */
 public final class LeaderNode {
     
-    /**
+    /** <p>相对于job</p>
      * 主节点根路径.
      */
     public static final String ROOT = "leader";
@@ -34,7 +34,7 @@ public final class LeaderNode {
     static final String ELECTION_ROOT = ROOT + "/election";
     
     static final String INSTANCE = ELECTION_ROOT + "/instance";
-    
+    /**主节点选举*/
     static final String LATCH = ELECTION_ROOT + "/latch";
     
     private final JobNodePath jobNodePath;

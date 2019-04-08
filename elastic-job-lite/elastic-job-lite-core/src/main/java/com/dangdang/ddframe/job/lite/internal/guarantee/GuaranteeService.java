@@ -39,7 +39,7 @@ public final class GuaranteeService {
         configService = new ConfigurationService(regCenter, jobName);
     }
     
-    /**
+    /**    <p>担保服务注册任务开始运行</p>
      * 根据分片项注册任务开始运行.
      * 
      * @param shardingItems 待注册的分片项

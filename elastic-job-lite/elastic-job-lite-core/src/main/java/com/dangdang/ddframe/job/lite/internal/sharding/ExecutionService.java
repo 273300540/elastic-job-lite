@@ -73,7 +73,7 @@ public final class ExecutionService {
         if (!configService.load(true).isMonitorExecution()) {
             return;
         }
-        for (int each : shardingContexts.getShardingItemParameters().keySet()) {
+        for (int each : shardingContexts.getShardingItemParameters().keySet()) {//移除正在执行中的节点
             jobNodeStorage.removeJobNodeIfExisted(ShardingNode.getRunningNode(each));
         }
     }

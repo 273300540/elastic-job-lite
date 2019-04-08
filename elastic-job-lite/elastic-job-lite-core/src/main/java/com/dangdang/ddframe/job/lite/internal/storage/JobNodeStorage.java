@@ -92,7 +92,7 @@ public final class JobNodeStorage {
         return regCenter.getChildrenKeys(jobNodePath.getFullPath(node));
     }
     
-    /**
+    /**<p>相对于job创建</p>
      * 如果存在则创建作业节点.
      * 
      * <p>如果作业根节点不存在表示作业已经停止, 不再继续创建节点.</p>

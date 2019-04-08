@@ -100,11 +100,11 @@ public final class ShardingService {
      * </p>
      */
     public void shardingIfNecessary() {
-        List<JobInstance> availableJobInstances = instanceService.getAvailableJobInstances();
+        List<JobInstance> availableJobInstances = instanceService.getAvailableJobInstances();//所有可用实例
         if (!isNeedSharding() || availableJobInstances.isEmpty()) {
             return;
         }
-        if (!leaderService.isLeaderUntilBlock()) {
+        if (!leaderService.isLeaderUntilBlock()) {//如果不是主节点,阻塞知道分片完成
             blockUntilShardingCompleted();
             return;
         }
@@ -114,18 +114,18 @@ public final class ShardingService {
         log.debug("Job '{}' sharding begin.", jobName);
         jobNodeStorage.fillEphemeralJobNode(ShardingNode.PROCESSING, "");
         resetShardingInfo(shardingTotalCount);
-        JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());
+        JobShardingStrategy jobShardingStrategy = JobShardingStrategyFactory.getStrategy(liteJobConfig.getJobShardingStrategyClass());//分片策略
         jobNodeStorage.executeInTransaction(new PersistShardingInfoTransactionExecutionCallback(jobShardingStrategy.sharding(availableJobInstances, jobName, shardingTotalCount)));
         log.debug("Job '{}' sharding complete.", jobName);
     }
     
-    private void blockUntilShardingCompleted() {
+    private void blockUntilShardingCompleted() {//如果不是leader
         while (!leaderService.isLeaderUntilBlock() && (jobNodeStorage.isJobNodeExisted(ShardingNode.NECESSARY) || jobNodeStorage.isJobNodeExisted(ShardingNode.PROCESSING))) {
             log.debug("Job '{}' sleep short time until sharding completed.", jobName);
             BlockUtils.waitingShortTime();
         }
     }
-    
+    /**如果有执行中的任务*/
     private void waitingOtherJobCompleted() {
         while (executionService.hasRunningItems()) {
             log.debug("Job '{}' sleep short time until other job completed.", jobName);
@@ -202,7 +202,7 @@ public final class ShardingService {
         
         @Override
         public void execute(final CuratorTransactionFinal curatorTransactionFinal) throws Exception {
-            for (Map.Entry<JobInstance, List<Integer>> entry : shardingResults.entrySet()) {
+            for (Map.Entry<JobInstance, List<Integer>> entry : shardingResults.entrySet()) {//分片结果
                 for (int shardingItem : entry.getValue()) {
                     curatorTransactionFinal.create().forPath(jobNodePath.getFullPath(ShardingNode.getInstanceNode(shardingItem)), entry.getKey().getJobInstanceId().getBytes()).and();
                 }

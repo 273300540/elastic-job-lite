@@ -75,8 +75,8 @@ public final class FailoverListenerManager extends AbstractListenerManager {
         
         @Override
         protected void dataChanged(final String path, final Type eventType, final String data) {
-            if (isFailoverEnabled() && Type.NODE_REMOVED == eventType && instanceNode.isInstancePath(path)) {
-                String jobInstanceId = path.substring(instanceNode.getInstanceFullPath().length() + 1);
+            if (isFailoverEnabled() && Type.NODE_REMOVED == eventType && instanceNode.isInstancePath(path)) {//节点故障
+                String jobInstanceId = path.substring(instanceNode.getInstanceFullPath().length() + 1);//job运行的实例ID
                 if (jobInstanceId.equals(JobRegistry.getInstance().getJobInstance(jobName).getJobInstanceId())) {
                     return;
                 }

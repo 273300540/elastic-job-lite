@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 作业核心配置.
+ * 作业核心配置.所有作业都一样
  * 
  * @author zhangliang
  */

@@ -104,7 +104,7 @@ public abstract class AbstractElasticJobExecutor {
         if (shardingContexts.isAllowSendJobEvent()) {
             jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_STAGING, String.format("Job '%s' execute begin.", jobName));
         }
-        if (jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())) {
+        if (jobFacade.misfireIfRunning(shardingContexts.getShardingItemParameters().keySet())) {//如果仍在运行,则设置错过运行标志
             if (shardingContexts.isAllowSendJobEvent()) {
                 jobFacade.postJobStatusTraceEvent(shardingContexts.getTaskId(), State.TASK_FINISHED, String.format(
                         "Previous job '%s' - shardingItems '%s' is still running, misfired job will start after previous job completed.", jobName, 
@@ -120,7 +120,7 @@ public abstract class AbstractElasticJobExecutor {
             jobExceptionHandler.handleException(jobName, cause);
         }
         execute(shardingContexts, JobExecutionEvent.ExecutionSource.NORMAL_TRIGGER);
-        while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {
+        while (jobFacade.isExecuteMisfired(shardingContexts.getShardingItemParameters().keySet())) {//如果存在错过执行的任务
             jobFacade.clearMisfire(shardingContexts.getShardingItemParameters().keySet());
             execute(shardingContexts, JobExecutionEvent.ExecutionSource.MISFIRE);
         }
@@ -151,7 +151,7 @@ public abstract class AbstractElasticJobExecutor {
         } finally {
             // TODO 考虑增加作业失败的状态，并且考虑如何处理作业失败的整体回路
             jobFacade.registerJobCompleted(shardingContexts);
-            if (itemErrorMessages.isEmpty()) {
+            if (itemErrorMessages.isEmpty()) {//如果不存在错误消息
                 if (shardingContexts.isAllowSendJobEvent()) {
                     jobFacade.postJobStatusTraceEvent(taskId, State.TASK_FINISHED, "");
                 }
@@ -172,7 +172,7 @@ public abstract class AbstractElasticJobExecutor {
             return;
         }
         final CountDownLatch latch = new CountDownLatch(items.size());
-        for (final int each : items) {
+        for (final int each : items) {//执行每个item
             final JobExecutionEvent jobExecutionEvent = new JobExecutionEvent(shardingContexts.getTaskId(), jobName, executionSource, each);
             if (executorService.isShutdown()) {
                 return;
@@ -204,7 +204,7 @@ public abstract class AbstractElasticJobExecutor {
         JobExecutionEvent completeEvent;
         try {
             process(new ShardingContext(shardingContexts, item));
-            completeEvent = startEvent.executionSuccess();
+            completeEvent = startEvent.executionSuccess();//作业成功事件
             log.trace("Job '{}' executed, item is: '{}'.", jobName, item);
             if (shardingContexts.isAllowSendJobEvent()) {
                 jobFacade.postJobExecutionEvent(completeEvent);

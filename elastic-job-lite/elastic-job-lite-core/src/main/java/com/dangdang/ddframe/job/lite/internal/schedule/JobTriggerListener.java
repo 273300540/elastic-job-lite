@@ -25,7 +25,7 @@ import org.quartz.listeners.TriggerListenerSupport;
 
 /**
  * 作业触发监听器.
- * 
+ *
  * @author zhangliang
  */
 @RequiredArgsConstructor

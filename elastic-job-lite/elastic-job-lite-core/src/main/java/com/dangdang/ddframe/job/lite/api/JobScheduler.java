@@ -88,7 +88,7 @@ public class JobScheduler {
         schedulerFacade = new SchedulerFacade(regCenter, liteJobConfig.getJobName(), elasticJobListenerList);
         jobFacade = new LiteJobFacade(regCenter, liteJobConfig.getJobName(), Arrays.asList(elasticJobListeners), jobEventBus);
     }
-    
+    /**担保服务*/
     private void setGuaranteeServiceForElasticJobListeners(final CoordinatorRegistryCenter regCenter, final List<ElasticJobListener> elasticJobListeners) {
         GuaranteeService guaranteeService = new GuaranteeService(regCenter, liteJobConfig.getJobName());
         for (ElasticJobListener each : elasticJobListeners) {
@@ -108,7 +108,7 @@ public class JobScheduler {
                 createScheduler(), createJobDetail(liteJobConfigFromRegCenter.getTypeConfig().getJobClass()), liteJobConfigFromRegCenter.getJobName());
         JobRegistry.getInstance().registerJob(liteJobConfigFromRegCenter.getJobName(), jobScheduleController, regCenter);
         schedulerFacade.registerStartUpInfo(!liteJobConfigFromRegCenter.isDisabled());
-        jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());
+        jobScheduleController.scheduleJob(liteJobConfigFromRegCenter.getTypeConfig().getCoreConfig().getCron());//调度任务
     }
     
     private JobDetail createJobDetail(final String jobClass) {
@@ -130,7 +130,7 @@ public class JobScheduler {
     protected Optional<ElasticJob> createElasticJobInstance() {
         return Optional.absent();
     }
-    
+    /**创建qutrz调度器*/
     private Scheduler createScheduler() {
         Scheduler result;
         try {

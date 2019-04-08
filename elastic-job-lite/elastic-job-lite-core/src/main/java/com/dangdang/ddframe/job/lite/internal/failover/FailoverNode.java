@@ -33,11 +33,11 @@ public final class FailoverNode {
     static final String LEADER_ROOT = LeaderNode.ROOT + "/" + FAILOVER;
     
     static final String ITEMS_ROOT = LEADER_ROOT + "/items";
-    
+    /**挂掉的分片项*/
     static final String ITEMS = ITEMS_ROOT + "/%s";
     
     static final String LATCH = LEADER_ROOT + "/latch";
-    
+    /**分片失败转移,data = 转移到的目标实例id*/
     private static final String EXECUTION_FAILOVER = ShardingNode.ROOT + "/%s/" + FAILOVER;
     
     private final JobNodePath jobNodePath;
@@ -49,7 +49,7 @@ public final class FailoverNode {
     static String getItemsNode(final int item) {
         return String.format(ITEMS, item);
     }
-    
+    /**分片失败转移,data = 转移到的目标实例id*/
     static String getExecutionFailoverNode(final int item) {
         return String.format(EXECUTION_FAILOVER, item);
     }

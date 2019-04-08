@@ -38,7 +38,7 @@ import java.util.List;
  */
 @Slf4j
 public final class FailoverService {
-    
+    /**针对每个job的FailoverService*/
     private final String jobName;
     
     private final JobNodeStorage jobNodeStorage;
@@ -51,13 +51,13 @@ public final class FailoverService {
         shardingService = new ShardingService(regCenter, jobName);
     }
     
-    /**
+    /**    <p>设置分片崩溃</p>
      * 设置失效的分片项标记.
      * 
      * @param item 崩溃的作业项
      */
     public void setCrashedFailoverFlag(final int item) {
-        if (!isFailoverAssigned(item)) {
+        if (!isFailoverAssigned(item)) {//
             jobNodeStorage.createJobNodeIfNeeded(FailoverNode.getItemsNode(item));
         }
     }
@@ -70,11 +70,11 @@ public final class FailoverService {
      * 如果需要失效转移, 则执行作业失效转移.
      */
     public void failoverIfNecessary() {
-        if (needFailover()) {
+        if (needFailover()) {//需要故障转移
             jobNodeStorage.executeInLeader(FailoverNode.LATCH, new FailoverLeaderExecutionCallback());
         }
     }
-    
+    /**判断job是由需要故障转移*/
     private boolean needFailover() {
         return jobNodeStorage.isJobNodeExisted(FailoverNode.ITEMS_ROOT) && !jobNodeStorage.getJobNodeChildrenKeys(FailoverNode.ITEMS_ROOT).isEmpty()
                 && !JobRegistry.getInstance().isJobRunning(jobName);
@@ -87,7 +87,7 @@ public final class FailoverService {
      */
     public void updateFailoverComplete(final Collection<Integer> items) {
         for (int each : items) {
-            jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(each));
+            jobNodeStorage.removeJobNodeIfExisted(FailoverNode.getExecutionFailoverNode(each));//移除每个节点对应的失败转移
         }
     }
     
@@ -100,10 +100,10 @@ public final class FailoverService {
     public List<Integer> getFailoverItems(final String jobInstanceId) {
         List<String> items = jobNodeStorage.getJobNodeChildrenKeys(ShardingNode.ROOT);
         List<Integer> result = new ArrayList<>(items.size());
-        for (String each : items) {
+        for (String each : items) {//作业对应的分片
             int item = Integer.parseInt(each);
             String node = FailoverNode.getExecutionFailoverNode(item);
-            if (jobNodeStorage.isJobNodeExisted(node) && jobInstanceId.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {
+            if (jobNodeStorage.isJobNodeExisted(node) && jobInstanceId.equals(jobNodeStorage.getJobNodeDataDirectly(node))) {//确保是属于当前节点的失败转移项
                 result.add(item);
             }
         }

@@ -30,14 +30,14 @@ public final class ShardingNode {
     /**
      * 执行状态根节点.
      */
-    public static final String ROOT = "sharding";
+    public static final String ROOT = "sharding"; //所有分片
     
     static final String INSTANCE_APPENDIX = "instance";
-    
+    /**分片对应的 机器实例*/
     public static final String INSTANCE = ROOT + "/%s/" + INSTANCE_APPENDIX;
     
     static final String RUNNING_APPENDIX = "running";
-    
+    /**表明有正在运行的分片*/
     static final String RUNNING = ROOT + "/%s/" + RUNNING_APPENDIX;
     
     static final String MISFIRE = ROOT + "/%s/misfire";
@@ -45,9 +45,9 @@ public final class ShardingNode {
     static final String DISABLED = ROOT + "/%s/disabled";
     
     static final String LEADER_ROOT = LeaderNode.ROOT + "/" + ROOT;
-    
+    /**用于标识需要分片, boolean*/
     static final String NECESSARY = LEADER_ROOT + "/necessary";
-    
+    /**leader/processing 表明分片正在处理*/
     static final String PROCESSING = LEADER_ROOT + "/processing";
     
     private final JobNodePath jobNodePath;
@@ -55,12 +55,12 @@ public final class ShardingNode {
     public ShardingNode(final String jobName) {
         jobNodePath = new JobNodePath(jobName);
     }
-    
+    /**ROOT/ + $分片号+ /instance;  存储实例ID*/
     public static String getInstanceNode(final int item) {
         return String.format(INSTANCE, item);
     }
     
-    /**
+    /**    <p>运行时节点</p>
      * 获取作业运行状态节点路径.
      *
      * @param item 作业项
